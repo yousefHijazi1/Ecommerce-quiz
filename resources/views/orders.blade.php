@@ -42,7 +42,7 @@
                 <i class="fas fa-shopping-bag text-muted" style="font-size: 4rem;"></i>
                 <h4 class="mt-3 text-muted">No orders found</h4>
                 <p class="text-muted">Start shopping to see your orders here</p>
-                <a href="{{ route('home') }}" class="btn btn-primary">
+                <a href="{{ route('products') }}" class="btn btn-primary">
                     <i class="fas fa-shopping-cart me-2"></i>Start Shopping
                 </a>
             </div>
