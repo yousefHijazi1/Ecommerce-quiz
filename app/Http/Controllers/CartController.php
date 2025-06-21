@@ -97,13 +97,12 @@ class CartController extends Controller
 
             $cartItem->quantity = $newQuantity;
             $cartItem->save();
-            dd($cartItem->quantity);
             return response()->json(['quantity' => $cartItem->quantity]);
         }
     }
 
     public function remove($id) {
-        
+
         $cartItem = Cart::findOrFail($id);
         $cartItem->delete();
 
