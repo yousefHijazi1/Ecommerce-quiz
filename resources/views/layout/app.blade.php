@@ -27,12 +27,12 @@ use App\Models\Cart;
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <div class="navbar-nav mx-auto">
-                    <div class="input-group search-bar">
+                    {{-- <div class="input-group search-bar">
                         <input type="text" class="form-control" placeholder="Search products..." id="searchInput">
                         <button class="btn btn-outline-primary" type="button">
                             <i class="fas fa-search"></i>
                         </button>
-                    </div>
+                    </div> --}}
                 </div>
 
                 <div class="navbar-nav ms-auto">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -19,6 +20,13 @@ class HomeController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+    public function roleCheck(){
+        if(Auth::user()->role === 'admin'){
+            return redirect('/admin');
+        }else{
+            return redirect('/');
+        }
+    }
     public function create()
     {
         //

@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\AdminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,11 +17,18 @@ use App\Http\Controllers\OrderController;
 |
 */
 
-Route::get('/home', function () { return redirect('/'); });
+//Home Controller Routes
+Route::controller(HomeController::class)->group(function () {
+    Route::get('/', 'index')->name('home');
+    Route::get('/home', 'roleCheck')->name('role-check');
+});
 
-
-Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products',[ProductController::class, 'index'])->name('products');
+
+//Admin Controller Routes
+Route::controller(AdminController::class)->group(function () {
+    Route::get('/admin', 'index')->name('admin');
+});
 
 
 //Cart Controller Routes
@@ -42,5 +50,5 @@ Route::middleware('auth')->group(function () {
         Route::get('/orders/{order}', 'show')->name('orders.show');
         Route::get('/orders-display', 'index')->name('orders.display');
     });
-    
+
 });
