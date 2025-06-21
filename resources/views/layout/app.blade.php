@@ -38,6 +38,14 @@
                 </div>
 
                 <div class="navbar-nav ms-auto">
+                    @auth
+                        @if(auth()->user()->role === 'admin')
+                            <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                                <i class="fas fa-house me-1"></i>Dashboard
+                            </a>
+                        @endif
+                    @endauth
+
                     <a class="nav-link" href="{{ route('products') }}">
                         <i class="fas fa-box me-1"></i>Products
                     </a>

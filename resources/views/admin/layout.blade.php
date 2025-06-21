@@ -309,27 +309,32 @@ body {
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="{{ route('admin.dashboard') }}">
+                            <a class="nav-link @if(request()->routeIs('admin.dashboard')) active @endif"
+                            href="{{ route('admin.dashboard') }}">
                                 <i class="fas fa-home me-2"></i>Dashboard
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('users.display') }}">
+                            <a class="nav-link @if(request()->routeIs('users.display')) active @endif"
+                            href="{{ route('users.display') }}">
                                 <i class="fas fa-users me-2"></i>Users
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('products.display') }}">
+                            <a class="nav-link @if(request()->routeIs('products.display')) active @endif"
+                            href="{{ route('products.display') }}">
                                 <i class="fas fa-box me-2"></i>Products
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin.orders.display') }}">
+                            <a class="nav-link @if(request()->routeIs('admin.orders.display')) active @endif"
+                            href="{{ route('admin.orders.display') }}">
                                 <i class="fas fa-shopping-cart me-2"></i>Orders
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('product.create') }}">
+                            <a class="nav-link @if(request()->routeIs('product.create')) active @endif"
+                            href="{{ route('product.create') }}">
                                 <i class="fas fa-plus me-2"></i>Add Product
                             </a>
                         </li>
