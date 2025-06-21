@@ -16,26 +16,31 @@ use App\Http\Controllers\OrderController;
 |
 */
 
-Route::get('/home', function () {
-    return redirect('/');
-});
+Route::get('/home', function () { return redirect('/'); });
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products',[ProductController::class, 'index'])->name('products');
 
 
-Route::get('/cart', [CartController::class, 'index'])->name('cart');
-Route::post('/update-cart', [CartController::class, 'updateCart'])->name('cart.update');
-Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+//Cart Controller Routes
+Route::controller(CartController::class)->group(function () {
+    Route::get('/cart', 'index')->name('cart');
+    Route::get('/cart-items', 'getCartItems')->name('cart-items');
+    Route::post('/update-cart', 'updateCart')->name('cart.update');
+    Route::post('/cart/add', 'add')->name('cart.add');
+    Route::delete('/cart/{id}', 'remove')->name('cart.remove');
+});
 
-Route::get('/cart-items', [CartController::class, 'getCartItems'])->name('cart-items');
-Route::delete('/cart/{id}', [CartController::class, 'remove'])->name('cart.remove');
 
 
 Route::middleware('auth')->group(function () {
-    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-    Route::get('/orders-display', [OrderController::class, 'index'])->name('orders.display');
 
+    //Order Controller Routes
+    Route::controller(OrderController::class)->group(function () {
+        Route::post('/orders', 'store')->name('orders.store');
+        Route::get('/orders/{order}', 'show')->name('orders.show');
+        Route::get('/orders-display', 'index')->name('orders.display');
+    });
+    
 });
