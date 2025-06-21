@@ -43,7 +43,7 @@ use App\Models\Cart;
                                     <div class="col-md-2">
                                         <div class="quantity-controls">
                                             <button class="btn btn-outline-secondary btn-sm" onclick="updateQuantity({{ $item->id }}, -1)">-</button>
-                                            <span class="mx-2 fw-bold">{{ $item->quantity }}</span>
+                                                <span class="mx-2 fw-bold">{{ $item->quantity }}</span>
                                             <button class="btn btn-outline-secondary btn-sm" onclick="updateQuantity({{ $item->id }}, 1)">+</button>
                                         </div>
                                     </div>
@@ -64,8 +64,6 @@ use App\Models\Cart;
                                 </div>
                             </div>
                         @endforeach
-
-
 
                         <!-- Continue Shopping -->
                         <div class="p-4">

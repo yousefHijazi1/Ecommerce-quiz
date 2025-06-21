@@ -157,8 +157,7 @@
                             <div class="col-lg-4 col-md-6 mb-4 product-item" data-category="electronics" data-price="99.99" data-rating="5">
                             <div class="card product-card h-100 shadow-sm">
                                 <div class="position-relative">
-                                    <img src="{{ asset('storage/' . $product->image) }}"
-                                         class="card-img-top" alt="Wireless Headphones">
+                                    <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" alt="Wireless Headphones">
                                     <div class="position-absolute top-0 end-0 m-2">
                                         <span class="badge bg-success">Best Seller</span>
                                     </div>
@@ -181,6 +180,7 @@
                                         @if ($product->quantity < 1)
                                             <strong class="text-danger">Out of Stock</strong>
                                         @endif
+                                        
                                         <form action="{{ route('cart.add') }}" method="post">
                                             @csrf
                                             <input type="hidden" name="product_id" value="{{ $product->id }}">

@@ -15,7 +15,7 @@
                         ($order->status == 'pending' ? 'warning' :
                         ($order->status == 'shipped' ? 'info' :
                         ($order->status == 'cancelled' ? 'danger' : 'warning')))
-                    }} fs-6">
+                        }} fs-6">
                         {{ ucfirst($order->status) }}
                     </span>
                 </div>
@@ -49,8 +49,8 @@
                             <div class="row align-items-center">
                                 <div class="col-md-2">
                                     <img src="{{ asset('storage/' . $item->product->image) }}"
-                                         class="img-fluid rounded"
-                                         alt="{{ $item->product->name }}">
+                                        class="img-fluid rounded"
+                                        alt="{{ $item->product->name }}">
                                 </div>
                                 <div class="col-md-5">
                                     <h5 class="fw-bold mb-1">{{ $item->product->name }}</h5>

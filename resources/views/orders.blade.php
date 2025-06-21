@@ -65,7 +65,7 @@
                                 ($order->status == 'pending' ? 'warning' :
                                 ($order->status == 'shipped' ? 'info' :
                                 ($order->status == 'cancelled' ? 'danger' : 'warning')))
-                            }}">
+                                }}">
                                 <i class="fas
                                     {{ $order->status == 'delivered' ? 'fa-check-circle' :
                                     ($order->status == 'pending' ? 'fa-clock' :
@@ -79,10 +79,14 @@
                             @if($order->status == 'pending')
                                 <a href="{{ route('orders.show', $order->id) }}" class="btn btn-sm btn-outline-primary me-2">View Details</a>
                                 <button class="btn btn-sm btn-outline-danger"
-                                onclick="showCancelModal('{{ $order->id }}')">Cancel</button>
-                                @elseif($order->status == 'shipped')
+                                    onclick="showCancelModal('{{ $order->id }}')">
+                                    Cancel
+                                </button>
+
+                            @elseif($order->status == 'shipped')
                                 <a href="{{ route('orders.show', $order->id) }}" class="btn btn-sm btn-outline-primary me-2">View Details</a>
                                 <button class="btn btn-sm btn-outline-success">Track Order</button>
+
                             @elseif($order->status == 'delivered')
                                 <button class="btn btn-sm btn-outline-primary me-2">Review Product</button>
                                 <button class="btn btn-sm btn-outline-secondary">Buy Again</button>
@@ -94,8 +98,7 @@
                     @foreach($order->items as $item)
                     <div class="row mb-3 {{ !$loop->last ? 'border-bottom pb-3' : '' }}">
                         <div class="col-md-2">
-                            <img src="{{ asset('storage/' . $item->product->image) }}"
-                                 class="img-fluid rounded" alt="{{ $item->product->name }}">
+                            <img src="{{ asset('storage/' . $item->product->image) }}" class="img-fluid rounded" alt="{{ $item->product->name }}">
                         </div>
                         <div class="col-md-6">
                             <h6 class="fw-bold">{{ $item->product->name }}</h6>
@@ -108,11 +111,13 @@
                                     <div class="progress-bar bg-warning" role="progressbar" style="width: 25%"></div>
                                 </div>
                                 <small class="text-muted">Expected delivery: {{ $order->created_at->addDays(7)->format('M d, Y') }}</small>
+
                             @elseif($order->status == 'shipped')
                                 <div class="progress mb-2">
                                     <div class="progress-bar bg-info" role="progressbar" style="width: 75%"></div>
                                 </div>
                                 <small class="text-muted">Expected delivery: {{ $order->created_at->addDays(5)->format('M d, Y') }}</small>
+
                             @elseif($order->status == 'delivered')
                                 <div class="progress mb-2">
                                     <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>

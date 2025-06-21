@@ -21,13 +21,11 @@ class Order extends Model
         'billing_address'
     ];
 
-    public function user() : BelongsTo
-    {
+    public function user() : BelongsTo{
         return $this->belongsTo(User::class);
     }
 
-    public function items()
-    {
+    public function items(){
         return $this->hasMany(OrderItem::class);
     }
 }

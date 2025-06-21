@@ -27,13 +27,11 @@ class User extends Authenticatable
         'role',
     ];
 
-    public function cart(): HasMany
-    {
+    public function cart(): HasMany {
         return $this->hasMany(Cart::class);
     }
 
-    public function orders(): HasMany
-    {
+    public function orders(): HasMany {
         return $this->hasMany(Order::class);
     }
     /**

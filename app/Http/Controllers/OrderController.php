@@ -11,96 +11,97 @@ use Illuminate\Support\Facades\DB;
 class OrderController extends Controller
 {
 
-        public function index()
-        {
-            $orders = Auth::user()->orders()  // This will now work
-                ->when(request('status'), function($query) {
-                    $query->where('status', request('status'));
-                })
-                ->when(request('search'), function($query) {
-                    $query->where(function($q) {
-                        $q->where('id', 'like', '%'.request('search').'%')
-                        ->orWhereHas('items.product', function($productQuery) {
-                            $productQuery->where('name', 'like', '%'.request('search').'%');
-                        });
+    public function index() {
+
+        $orders = Auth::user()->orders()  // This will now work
+            ->when(request('status'), function($query) {
+                $query->where('status', request('status'));
+            })
+            ->when(request('search'), function($query) {
+                $query->where(function($q) {
+                    $q->where('id', 'like', '%'.request('search').'%')
+                    ->orWhereHas('items.product', function($productQuery) {
+                        $productQuery->where('name', 'like', '%'.request('search').'%');
                     });
-                })
-                ->with(['items.product'])
-                ->latest()
-                ->paginate(10);
+                });
+            })
+            ->with(['items.product'])
+            ->latest()
+            ->paginate(10);
 
-            return view('orders', compact('orders'));
-        }
-    public function store(Request $request)
-{
-    DB::beginTransaction();
+        return view('orders', compact('orders'));
+    }
 
-    try {
-        $user = Auth::user();
-        $cartItems = $user->cart()->with(['product' => function($query) {
-            $query->where('quantity', '>=', 1);
-        }])->get();
+    public function store(Request $request) {
 
-        $validCartItems = $cartItems->filter(fn($item) => $item->product);
+        DB::beginTransaction();
 
-        if ($validCartItems->isEmpty()) {
-            return response()->json([
-                'error' => 'No valid products in cart'
-            ], 400);
-        }
+        try {
+            $user = Auth::user();
+            $cartItems = $user->cart()->with(['product' => function($query) {
+                $query->where('quantity', '>=', 1);
+            }])->get();
 
-        $subtotal = $validCartItems->sum(fn($item) => $item->product->price * $item->quantity);
-        $shipping = 10.00;
-        $total = $subtotal + $shipping;
+            $validCartItems = $cartItems->filter(fn($item) => $item->product);
 
-        $order = Order::create([
-            'user_id' => $user->id,
-            'subtotal' => $subtotal,
-            'shipping' => $shipping,
-            'total' => $total,
-            'status' => 'pending',
-            'payment_status' => 'pending',
-            'shipping_address' => 'Default address', // Update this with real data
-            'billing_address' => 'Default address', // Update this with real data
-        ]);
+            if ($validCartItems->isEmpty()) {
+                return response()->json([
+                    'error' => 'No valid products in cart'
+                ], 400);
+            }
 
-        foreach ($validCartItems as $cartItem) {
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $cartItem->product_id,
-                'quantity' => $cartItem->quantity,
-                'price' => $cartItem->product->price,
+            $subtotal = $validCartItems->sum(fn($item) => $item->product->price * $item->quantity);
+            $shipping = 10.00;
+            $total = $subtotal + $shipping;
+
+            $order = Order::create([
+                'user_id' => $user->id,
+                'subtotal' => $subtotal,
+                'shipping' => $shipping,
+                'total' => $total,
+                'status' => 'pending',
+                'payment_status' => 'pending',
+                'shipping_address' => 'Default address', // Update this with real data
+                'billing_address' => 'Default address', // Update this with real data
             ]);
 
-            // Update product quantity
-            $cartItem->product->decrement('quantity', $cartItem->quantity);
+            foreach ($validCartItems as $cartItem) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $cartItem->product_id,
+                    'quantity' => $cartItem->quantity,
+                    'price' => $cartItem->product->price,
+                ]);
+
+                // Update product quantity
+                $cartItem->product->decrement('quantity', $cartItem->quantity);
+            }
+
+            // Clear only the processed items from cart
+            $user->cart()->whereIn('id', $validCartItems->pluck('id'))->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'redirect' => route('orders.show', $order)
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'error' => 'Failed to create order: ' . $e->getMessage()
+            ], 500);
         }
-
-        // Clear only the processed items from cart
-        $user->cart()->whereIn('id', $validCartItems->pluck('id'))->delete();
-
-        DB::commit();
-
-        return response()->json([
-            'redirect' => route('orders.show', $order)
-        ]);
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json([
-            'error' => 'Failed to create order: ' . $e->getMessage()
-        ], 500);
     }
-}
 
-    public function show(Order $order)
-    {
+    public function show(Order $order) {
+
         $order->load('items.product');
         return view('orderDisplay', compact('order'));
     }
 
-    public function cancel(Order $order, Request $request)
-    {
+    public function cancel(Order $order, Request $request) {
+        
         // Authorization check
         if ($order->user_id !== Auth::id()) {
             abort(403);

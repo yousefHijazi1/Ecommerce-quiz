@@ -59,10 +59,10 @@ use App\Models\Cart;
                             <i class="fas fa-user-plus me-1"></i>Register
                         </a>
                     @endguest
-                    <a class="nav-link" href="{{ route('orders.display') }}">
-                        <i class="fas fa-clipboard-list me-1"></i>Orders
-                    </a>
-                    <a class="nav-link position-relative" href="{{ route('cart') }}">
+                        <a class="nav-link" href="{{ route('orders.display') }}">
+                            <i class="fas fa-clipboard-list me-1"></i>Orders
+                        </a>
+                        <a class="nav-link position-relative" href="{{ route('cart') }}">
                         <i class="fas fa-shopping-cart me-1"></i>Cart
                         @auth
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
