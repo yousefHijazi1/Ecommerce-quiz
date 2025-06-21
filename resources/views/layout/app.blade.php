@@ -1,5 +1,5 @@
 @php
-use App\Models\Cart;
+    use App\Models\Cart;
 @endphp
 
 <!DOCTYPE html>
@@ -10,10 +10,12 @@ use App\Models\Cart;
     <title>@yield('title', 'Ecommerce')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js']);
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
         <div class="container">
@@ -74,6 +76,7 @@ use App\Models\Cart;
             </div>
         </div>
     </nav>
+
     <main>
         @yield('content')
     </main>

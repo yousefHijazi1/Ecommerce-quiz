@@ -95,25 +95,24 @@ class OrderController extends Controller
     }
 
     public function show(Order $order) {
-
         $order->load('items.product');
         return view('orderDisplay', compact('order'));
     }
 
     public function cancel(Order $order, Request $request) {
-        
-        // Authorization check
-        if ($order->user_id !== Auth::id()) {
-            abort(403);
+
+        // Authorization - user can only cancel their own orders
+        if ($order->user_id !== auth()->id()) {
+            return back()->with('error', 'Unauthorized action');
         }
 
-        // Status validation - only allow cancellation for pending orders
+        // Validate order can be cancelled
         if ($order->status !== 'pending') {
-            return redirect()->route('orders.display')
-                ->with('error', 'Order can only be cancelled when in "Pending" status');
+            return back()->with('error', 'Only pending orders can be cancelled');
         }
 
-        DB::transaction(function () use ($order, $request) {
+        DB::beginTransaction();
+        try {
             // Update order status
             $order->update([
                 'status' => 'cancelled',
@@ -125,10 +124,16 @@ class OrderController extends Controller
             foreach ($order->items as $item) {
                 $item->product->increment('quantity', $item->quantity);
             }
-        });
 
-        return redirect()->route('orders.display')
-            ->with('success', 'Order #'.$order->id.' has been cancelled successfully');
+            DB::commit();
+
+            return redirect()->back()
+                ->with('success', 'Order #'.$order->id.' has been cancelled');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to cancel order: '.$e->getMessage());
+        }
     }
 
 }

@@ -78,10 +78,15 @@
                         <div class="col-md-4 text-end">
                             @if($order->status == 'pending')
                                 <a href="{{ route('orders.show', $order->id) }}" class="btn btn-sm btn-outline-primary me-2">View Details</a>
-                                <button class="btn btn-sm btn-outline-danger"
-                                    onclick="showCancelModal('{{ $order->id }}')">
-                                    Cancel
+                                <button type="button" class="btn btn-danger" data-cancel-order data-order-id="{{ $order->id }}">
+                                    <i class="fas fa-times me-2"></i>Cancel
                                 </button>
+
+                                <!-- Cancel Form -->
+                                <form id="cancel-order-form" action="{{ route('orders.cancel', $order->id) }}" method="POST" style="display: none;">
+                                    @csrf
+                                    @method('PATCH')
+                                </form>
 
                             @elseif($order->status == 'shipped')
                                 <a href="{{ route('orders.show', $order->id) }}" class="btn btn-sm btn-outline-primary me-2">View Details</a>
@@ -138,47 +143,17 @@
         @endif
     </div>
 
-    <!-- Cancel Order Modal -->
-    <div class="modal fade" id="cancelOrderModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form id="cancelOrderForm" method="POST">
-                    @csrf
-                    @method('PATCH')
-                    <div class="modal-header">
-                        <h5 class="modal-title">Cancel Order</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Are you sure you want to cancel this order?</p>
-                        <p class="text-muted">Order #<span id="cancelOrderId"></span></p>
-                        <div class="mb-3">
-                            <label for="cancelReason" class="form-label">Reason for cancellation</label>
-                            <select class="form-select" id="cancelReason" name="reason" required>
-                                <option value="">Select a reason</option>
-                                <option value="changed-mind">Changed my mind</option>
-                                <option value="found-better-price">Found better price</option>
-                                <option value="no-longer-needed">No longer needed</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keep Order</button>
-                        <button type="submit" class="btn btn-danger">Cancel Order</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-@endsection
-
-@section('scripts')
 <script>
-    function showCancelModal(orderId) {
-        document.getElementById('cancelOrderId').textContent = orderId;
-        document.getElementById('cancelOrderForm').action = `/orders/${orderId}/cancel`;
-        new bootstrap.Modal(document.getElementById('cancelOrderModal')).show();
-    }
+    // Cancel Button Event Listener
+document.addEventListener('DOMContentLoaded', function() {
+    const cancelButton = document.querySelector('[data-cancel-order]');
+    const cancelForm = document.getElementById('cancel-order-form');
+
+    cancelButton.addEventListener('click', function() {
+        cancelForm.submit();
+    });
+});
 </script>
 @endsection
+
+

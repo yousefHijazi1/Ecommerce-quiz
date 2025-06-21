@@ -85,8 +85,8 @@ class CartController extends Controller
 
     public function updateCart(Request $request) {
 
-        $cartItem = Cart::find($request->id);
-        $product = Product::find($cartItem->product_id);
+        $cartItem = Cart::findOrFail($request->id);
+        $product = Product::findOrFail($cartItem->product_id);
 
         if ($cartItem) {
             $newQuantity = $cartItem->quantity + $request->quantity;

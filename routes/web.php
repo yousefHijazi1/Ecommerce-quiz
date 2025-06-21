@@ -27,7 +27,12 @@ Route::get('/products',[ProductController::class, 'index'])->name('products');
 
 //Admin Controller Routes
 Route::controller(AdminController::class)->group(function () {
-    Route::get('/admin', 'index')->name('admin');
+    Route::get('/admin', 'index')->name('admin.dashboard');
+    Route::get('/products-display', 'displayProducts')->name('products.display');
+    Route::get('/users-display', 'displayUsers')->name('users.display');
+    Route::get('/admin-orders-display', 'displayOrders')->name('admin.orders.display');
+    Route::get('/product-create','createProduct')->name('product.create');
+    Route::post('/product-store','storeProduct')->name('product.store');
 });
 
 
@@ -49,6 +54,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/orders', 'store')->name('orders.store');
         Route::get('/orders/{order}', 'show')->name('orders.show');
         Route::get('/orders-display', 'index')->name('orders.display');
+        Route::patch('/orders/{order}/cancel', 'cancel')->name('orders.cancel');
     });
 
 });
