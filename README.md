@@ -14,6 +14,7 @@ Installation steps :
     import quiz.sql file in your database .
 
 6- run in terminal 'npm run dev'
+
 7- run in terminal 'php artisan serve'
 
 demo data in quiz.sql
