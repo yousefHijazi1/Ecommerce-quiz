@@ -16,10 +16,8 @@ class Order extends Model
         'shipping',
         'total',
         'status',
-        'payment_method',
         'payment_status',
         'shipping_address',
-        'billing_address'
     ];
 
     public function user() : BelongsTo{

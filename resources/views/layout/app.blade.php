@@ -38,37 +38,18 @@
                 </div>
 
                 <div class="navbar-nav ms-auto">
-                    @auth
-                        @if(auth()->user()->role === 'admin')
-                            <a class="nav-link" href="{{ route('admin.dashboard') }}">
-                                <i class="fas fa-house me-1"></i>Dashboard
-                            </a>
-                        @endif
-                    @endauth
+                        @auth
+                            @if(auth()->user()->role === 'admin')
+                                <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                                    <i class="fas fa-house me-1"></i>Dashboard
+                                </a>
+                            @endif
+                        @endauth
 
-                    <a class="nav-link" href="{{ route('products') }}">
-                        <i class="fas fa-box me-1"></i>Products
-                    </a>
-
-                    @auth
-                        <a class="nav-link" href="{{ route('logout') }}"
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            <i class="fas fa-user me-1"></i>Logout
+                        <a class="nav-link" href="{{ route('products') }}">
+                            <i class="fas fa-box me-1"></i>Products
                         </a>
 
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                    @endauth
-
-                    @guest
-                        <a class="nav-link" href="{{ url('/login')}}">
-                            <i class="fas fa-user me-1"></i>Login
-                        </a>
-                        <a class="nav-link" href="{{ route('register') }}">
-                            <i class="fas fa-user-plus me-1"></i>Register
-                        </a>
-                    @endguest
                         <a class="nav-link" href="{{ route('orders.display') }}">
                             <i class="fas fa-clipboard-list me-1"></i>Orders
                         </a>
@@ -79,6 +60,26 @@
                                 {{ Cart::where('user_id', Auth::id())->count() }}
                             </span>
                         @endauth
+
+                        @auth
+                            <a class="nav-link" href="{{ route('logout') }}"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="fas fa-user me-1"></i>Logout
+                            </a>
+
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                        @endauth
+
+                        @guest
+                            <a class="nav-link" href="{{ url('/login')}}">
+                                <i class="fas fa-user me-1"></i>Login
+                            </a>
+                            <a class="nav-link" href="{{ route('register') }}">
+                                <i class="fas fa-user-plus me-1"></i>Register
+                            </a>
+                        @endguest
                     </a>
                 </div>
             </div>

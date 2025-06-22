@@ -85,14 +85,23 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <h6 class="fw-bold">Shipping Address</h6>
                                 <p class="mb-1">{{ $order->shipping_address }}</p>
                             </div>
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Billing Address</h6>
-                                <p class="mb-1">{{ $order->billing_address }}</p>
+                            <div class="col-md-3">
+                                <h6 class="fw-bold">Client Name</h6>
+                                <p class="mb-1">{{ $order->user->name}}</p>
                             </div>
+                            <div class="col-md-3">
+                                <h6 class="fw-bold">Email</h6>
+                                <p class="mb-1">{{ $order->user->email}}</p>
+                            </div>
+                            <div class="col-md-3">
+                                <h6 class="fw-bold">Phone Number</h6>
+                                <p class="mb-1">{{ $order->user->phone_number}}</p>
+                            </div>
+
                         </div>
                         @if($order->status == 'shipped')
                         <div class="mt-3">
@@ -133,7 +142,7 @@
 
                         <div class="d-flex justify-content-between mb-2">
                             <span>Payment Method</span>
-                            <span class="text-capitalize">{{ $order->payment_method ?? 'Not specified' }}</span>
+                            <span class="text-capitalize">Cash on Delivery</span>
                         </div>
 
                         <div class="d-flex justify-content-between">

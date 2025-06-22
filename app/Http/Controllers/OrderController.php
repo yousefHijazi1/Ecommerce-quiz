@@ -34,6 +34,10 @@ class OrderController extends Controller
 
     public function store(Request $request) {
 
+        $validated = $request->validate([
+            'shipping_address' => 'required|string',
+        ]);
+
         DB::beginTransaction();
 
         try {
@@ -61,8 +65,7 @@ class OrderController extends Controller
                 'total' => $total,
                 'status' => 'pending',
                 'payment_status' => 'pending',
-                'shipping_address' => 'Default address', // Update this with real data
-                'billing_address' => 'Default address', // Update this with real data
+                'shipping_address' => $validated['shipping_address'], // Update this with real data
             ]);
 
             foreach ($validCartItems as $cartItem) {

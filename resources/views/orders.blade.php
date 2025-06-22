@@ -88,13 +88,11 @@
                                     @method('PATCH')
                                 </form>
 
-                            @elseif($order->status == 'shipped')
-                                <a href="{{ route('orders.show', $order->id) }}" class="btn btn-sm btn-outline-primary me-2">View Details</a>
-                                <button class="btn btn-sm btn-outline-success">Track Order</button>
+                                @elseif($order->status == 'shipped')
+                                    <a href="{{ route('orders.show', $order->id) }}" class="btn btn-sm btn-outline-primary me-2">View Details</a>
 
-                            @elseif($order->status == 'delivered')
-                                <button class="btn btn-sm btn-outline-primary me-2">Review Product</button>
-                                <button class="btn btn-sm btn-outline-secondary">Buy Again</button>
+                                @elseif($order->status == 'delivered')
+                                    <a href="{{ route('orders.show', $order->id) }}" class="btn btn-sm btn-outline-primary me-2">View Details</a>
                             @endif
                         </div>
                     </div>

@@ -10,8 +10,8 @@ class ProductController extends Controller
      * Display a listing of the resource.
      */
     public function index() {
-        
-        $products = Product::paginate(9);
+
+        $products = Product::paginate(8);
         return view('products', compact('products'));
     }
 

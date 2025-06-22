@@ -56,33 +56,6 @@ class CartController extends Controller
         return back()->with('success', 'Product added to cart');
     }
 
-    public function addAfterLogin(Request $request) {
-
-        if (session()->has('product_id')) {
-            $product_id = session()->get('product_id');
-            $quantity = session()->get('quantity');
-            session()->forget('product_id');
-            session()->forget('quantity');
-
-            $cart = Cart::where('user_id', Auth::id())
-                ->where('product_id', $product_id)
-                ->first();
-
-            if ($cart) {
-                $cart->quantity += $quantity;
-                $cart->save();
-            } else {
-                Cart::create([
-                    'user_id' => Auth::id(),
-                    'product_id' => $product_id,
-                    'quantity' => $quantity,
-                ]);
-            }
-
-            return back()->with('success', 'Product added to cart');
-        }
-    }
-
     public function updateCart(Request $request) {
 
         $cartItem = Cart::findOrFail($request->id);

@@ -76,8 +76,17 @@ use App\Models\Cart;
             </div>
 
             <div class="col-lg-4">
-                <!-- Order Summary -->
+                <!-- Shipping Address -->
                 <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h6 class="fw-bold mb-3">Shipping Address *</h6>
+                        <div class="input-group">
+                            <input name="shipping_address" type="text" class="form-control" placeholder="Enter your shipping address" id="shippingAddress" required>
+                        </div>
+                    </div>
+                </div>
+                <!-- Order Summary -->
+                <div class="card shadow-sm mt-3">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0"><i class="fas fa-receipt me-2"></i>Order Summary</h5>
                     </div>
@@ -127,53 +136,62 @@ use App\Models\Cart;
                 </div>
 
                 <!-- Promo Code -->
-                <div class="card shadow-sm mt-3">
-                    <div class="card-body">
-                        <h6 class="fw-bold mb-3">Have a promo code?</h6>
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Enter promo code">
-                            <button class="btn btn-outline-primary" type="button">Apply</button>
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>
 
-    <script>
-    document.getElementById('checkoutButton').addEventListener('click', function() {
-        // Show loading state
-        this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Processing...';
-        this.disabled = true;
+<script>
+document.getElementById('checkoutButton').addEventListener('click', function() {
+    // Get shipping address from input
+    const shippingAddress = document.getElementById('shippingAddress').value;
 
-        // Create the order via AJAX
-        fetch('{{ route("orders.store") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                // Include any additional data needed (like shipping address)
-            })
+    // Validate shipping address
+    if (!shippingAddress) {
+        alert('Please enter your shipping address');
+        this.innerHTML = '<i class="fas fa-credit-card me-2"></i> Proceed to Checkout';
+        this.disabled = false;
+        return;
+    }
+
+    // Show loading state
+    this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Processing...';
+    this.disabled = true;
+
+    // Create the order via AJAX
+    fetch('{{ route("orders.store") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            shipping_address: shippingAddress
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.redirect) {
-                window.location.href = data.redirect;
-            } else if (data.error) {
-                alert(data.error);
-                this.innerHTML = '<i class="fas fa-credit-card me-2"></i> Proceed to Checkout';
-                this.disabled = false;
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.redirect) {
+            window.location.href = data.redirect;
+        } else if (data.error) {
+            alert(data.error);
             this.innerHTML = '<i class="fas fa-credit-card me-2"></i> Proceed to Checkout';
             this.disabled = false;
-        });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred during checkout. Please try again.');
+        this.innerHTML = '<i class="fas fa-credit-card me-2"></i> Proceed to Checkout';
+        this.disabled = false;
     });
+});
 </script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
