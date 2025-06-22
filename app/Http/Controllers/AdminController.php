@@ -6,15 +6,32 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Order;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Fortify\Rules\Password;
 class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        return view('admin.index');
+    public function index(){
+        $recentUsers = User::latest()->take(5)->get();
+        $recentOrders = Order::latest()->take(5)->get();
+        $totalProducts = Product::count();
+        $totalUsers = User::count();
+        $totalOrders = Order::count();
+        $totalRevenue = Order::where('status', 'completed')->sum('total');
+
+        return view('admin.index', compact(
+            'recentUsers',
+            'recentOrders',
+            'totalProducts',
+            'totalUsers',
+            'totalOrders',
+            'totalRevenue'
+        ));
     }
 
     /**
@@ -71,35 +88,30 @@ class AdminController extends Controller
         return redirect()->route('product.create')->with('success', 'Product created successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+    public function createUser() {
+        return view('admin.create-user');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+    public function storeUser(Request $request) {
+        // Validate the form data
+        $input = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8',
+            'password_confirmation' => 'required|same:password',
+            'phone_number' => 'required',
+        ]);
+
+        $input['password'] = Hash::make($input['password']);
+        $input['role'] = 'user';
+
+        $user = User::create($input);
+
+        if(!$user){
+            return back()->withErrors('User creation failed.')->withInput();
+        }
+
+        return redirect()->route('user.create')->with('success', 'User created successfully!');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

@@ -19,7 +19,7 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Users</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">1,245</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalUsers }}</div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="fas fa-users fa-2x text-gray-300"></i>
@@ -34,7 +34,7 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Products</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">856</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalProducts }}</div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="fas fa-box fa-2x text-gray-300"></i>
@@ -49,7 +49,7 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Orders</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">2,341</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalOrders }}</div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
@@ -64,7 +64,7 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Revenue</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">$125,430</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">${{ $totalRevenue }}</div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -89,35 +89,24 @@
                                             <tr>
                                                 <th>Name</th>
                                                 <th>Email</th>
-                                                <th>Status</th>
+                                                <th>Role</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>John Doe</td>
-                                                <td>john@example.com</td>
-                                                <td><span class="badge bg-success">Active</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Jane Smith</td>
-                                                <td>jane@example.com</td>
-                                                <td><span class="badge bg-success">Active</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Mike Johnson</td>
-                                                <td>mike@example.com</td>
-                                                <td><span class="badge bg-warning">Pending</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Sarah Wilson</td>
-                                                <td>sarah@example.com</td>
-                                                <td><span class="badge bg-success">Active</span></td>
-                                            </tr>
+                                            @foreach ($recentUsers as $user)
+                                                @if($user->role != 'admin')
+                                                    <tr>
+                                                        <td>{{ $user->name }}</td>
+                                                        <td>{{ $user->email }}</td>
+                                                        <td><span class="badge bg-success">{{ $user->role }}</span></td>
+                                                    </tr>
+                                                @endif
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
                                 <div class="text-center">
-                                    <a href="users.html" class="btn btn-primary btn-sm">View All Users</a>
+                                    <a href="{{ route('users.display') }}" class="btn btn-primary btn-sm">View All Users</a>
                                 </div>
                             </div>
                         </div>
@@ -134,40 +123,29 @@
                                             <tr>
                                                 <th>Order ID</th>
                                                 <th>Customer</th>
-                                                <th>Amount</th>
+                                                <th>Total</th>
                                                 <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>#1001</td>
-                                                <td>John Doe</td>
-                                                <td>$120.00</td>
-                                                <td><span class="badge bg-success">Completed</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>#1002</td>
-                                                <td>Jane Smith</td>
-                                                <td>$85.50</td>
-                                                <td><span class="badge bg-warning">Processing</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>#1003</td>
-                                                <td>Mike Johnson</td>
-                                                <td>$200.00</td>
-                                                <td><span class="badge bg-info">Shipped</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>#1004</td>
-                                                <td>Sarah Wilson</td>
-                                                <td>$75.25</td>
-                                                <td><span class="badge bg-success">Completed</span></td>
-                                            </tr>
+                                            @foreach ($recentOrders as $order)
+                                                <tr>
+                                                    <td>#{{ $order->id }}</td>
+                                                    <td>{{ $order->user->name }}</td>
+                                                    <td>${{ $order->total }}</td>
+                                                    <td><span class="badge bg-{{
+                                                $order->status == 'delivered' ? 'success' :
+                                                ($order->status == 'pending' ? 'warning' :
+                                                ($order->status == 'shipped' ? 'info' :
+                                                ($order->status == 'cancelled' ? 'danger' : 'warning')))
+                                                }}">{{ $order->status }}</span></td>
+                                                </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
                                 <div class="text-center">
-                                    <a href="orders.html" class="btn btn-primary btn-sm">View All Orders</a>
+                                    <a href="{{ route('admin.orders.display') }}" class="btn btn-primary btn-sm">View All Orders</a>
                                 </div>
                             </div>
                         </div>

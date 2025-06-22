@@ -338,6 +338,12 @@ body {
                                 <i class="fas fa-plus me-2"></i>Add Product
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link @if(request()->routeIs('user.create')) active @endif"
+                            href="{{ route('user.create') }}">
+                                <i class="fas fa-user-plus me-2"></i>Add User
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </nav>

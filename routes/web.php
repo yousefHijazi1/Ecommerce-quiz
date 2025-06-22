@@ -33,6 +33,8 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('/admin-orders-display', 'displayOrders')->name('admin.orders.display');
     Route::get('/product-create','createProduct')->name('product.create');
     Route::post('/product-store','storeProduct')->name('product.store');
+    Route::get('/user-create','createUser')->name('user.create');
+    Route::post('/user-store','storeUser')->name('user.store');
 });
 
 

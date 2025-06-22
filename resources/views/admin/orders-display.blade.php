@@ -121,7 +121,7 @@
                                                     <br><small class="text-muted">{{ $order->user->email }}</small>
                                                 </div>
                                             </td>
-                                            <td><strong>$1,299.00</strong></td>
+                                            <td><strong>${{ $order->total }}</strong></td>
                                             <td><span class="badge bg-{{
                                                 $order->status == 'delivered' ? 'success' :
                                                 ($order->status == 'pending' ? 'warning' :
