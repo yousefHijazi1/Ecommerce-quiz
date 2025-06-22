@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Fortify\Rules\Password;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 class AdminController extends Controller
 {
     /**
@@ -22,7 +24,7 @@ class AdminController extends Controller
         $totalProducts = Product::count();
         $totalUsers = User::count();
         $totalOrders = Order::count();
-        $totalRevenue = Order::where('status', 'completed')->sum('total');
+        $totalRevenue = Order::where('status', 'delivered')->sum('total');
 
         return view('admin.index', compact(
             'recentUsers',
@@ -112,6 +114,40 @@ class AdminController extends Controller
         }
 
         return redirect()->route('user.create')->with('success', 'User created successfully!');
+    }
+
+    public function updateStatus(Request $request, Order $order){
+        $validStatuses = ['processing', 'shipped', 'delivered', 'cancelled'];
+
+        $request->validate([
+            'status' => 'required|in:' . implode(',', $validStatuses)
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $previousStatus = $order->status;
+            $newStatus = $request->status;
+
+            // Update order status
+            $order->update(['status' => $newStatus]);
+
+            // If cancelling, restore product quantities
+            if ($newStatus === 'cancelled' && $previousStatus !== 'cancelled') {
+                foreach ($order->items as $item) {
+                    $item->product->increment('quantity', $item->quantity);
+                }
+            }
+
+            DB::commit();
+
+            return back()->with('success', "Order #{$order->id} status updated to " . ucfirst($newStatus));
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("Order status update failed: " . $e->getMessage());
+            return back()->with('error', 'Failed to update order status');
+        }
     }
 
 }

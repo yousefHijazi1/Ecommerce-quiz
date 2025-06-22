@@ -17,7 +17,7 @@ return new class extends Migration
             $table->decimal('subtotal', 10, 2);
             $table->decimal('shipping', 10, 2)->default(10.00);
             $table->decimal('total', 10, 2);
-            $table->string('status')->default('pending'); // pending, processing, completed, cancelled
+            $table->string('status')->default('pending'); // pending, processing, delivered, cancelled
             $table->string('payment_method')->nullable();
             $table->string('payment_status')->default('pending');
             $table->text('shipping_address')->nullable();

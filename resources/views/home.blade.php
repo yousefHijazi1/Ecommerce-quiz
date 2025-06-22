@@ -48,7 +48,7 @@
                             <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" alt="Product Image">
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">{{ $product->name }}</h5>
-                                {{-- <p class="card-text text-muted">Latest smartphone with advanced camera and long battery life.</p> --}}
+                                <p class="card-text text-muted">{{ $product->description }}</p>
                                 <div class="mt-auto">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <span class="h5 text-primary mb-0">${{ $product->price }}</span>

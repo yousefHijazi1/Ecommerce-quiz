@@ -80,8 +80,8 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <h4> {{ $orders->where('status', 'completed')->count() }}</h4>
-                                        <p class="mb-0">Completed</p>
+                                        <h4> {{ $orders->where('status', 'delivered')->count() }}</h4>
+                                        <p class="mb-0">Delivered</p>
                                     </div>
                                     <div class="align-self-center">
                                         <i class="fas fa-check fa-2x"></i>
@@ -91,7 +91,11 @@
                         </div>
                     </div>
                 </div>
-
+                @if(session()->has('success'))
+                    <div class="alert alert-success">
+                        {{ session()->get('success') }}
+                    </div>
+                @endif
                 <!-- Orders Table -->
                 <div class="card shadow">
                     <div class="card-header py-3">
@@ -107,34 +111,70 @@
                                         <th>Total</th>
                                         <th>Status</th>
                                         <th>Date</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($orders as $order)
                                         <tr>
-                                            <td>
-                                                <strong># {{ $order->id }}</strong>
-                                            </td>
+                                            <td><strong># {{ $order->id }}</strong></td>
                                             <td>
                                                 <div>
                                                     <strong>{{ $order->user->name }}</strong>
                                                     <br><small class="text-muted">{{ $order->user->email }}</small>
                                                 </div>
                                             </td>
-                                            <td><strong>${{ $order->total }}</strong></td>
-                                            <td><span class="badge bg-{{
-                                                $order->status == 'delivered' ? 'success' :
-                                                ($order->status == 'pending' ? 'warning' :
-                                                ($order->status == 'shipped' ? 'info' :
-                                                ($order->status == 'cancelled' ? 'danger' : 'warning')))
-                                                }}">{{ $order->status }}</span>
+                                            <td><strong>${{ number_format($order->total, 2) }}</strong></td>
+                                            <td>
+                                                <span class="badge bg-{{
+                                                    $order->status == 'delivered' ? 'success' :
+                                                    ($order->status == 'pending' ? 'warning' :
+                                                    ($order->status == 'shipped' ? 'info' :
+                                                    ($order->status == 'cancelled' ? 'danger' : 'warning')))
+                                                }}">{{ ucfirst($order->status) }}</span>
                                             </td>
                                             <td>
-                                                <small>{{ date_format($order->created_at,"M d, Y") }}<br>{{ date_format($order->created_at,"h:i A") }}</small>
+                                                <small>{{ $order->created_at->format('M d, Y') }}<br>{{ $order->created_at->format('h:i A') }}</small>
+                                            </td>
+                                            <td>
+                                                @if(!in_array($order->status, ['cancelled', 'delivered']))
+                                                <div class="dropdown">
+                                                    <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
+                                                            id="statusDropdown{{ $order->id }}" data-bs-toggle="dropdown"
+                                                            aria-expanded="false">
+                                                        Change Status
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="statusDropdown{{ $order->id }}">
+                                                        <li>
+                                                            <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST">
+                                                                @csrf
+                                                                @method('PATCH')
+                                                                <button type="submit" name="status" value="processing" class="dropdown-item">
+                                                                    <i class="fas fa-clock me-2"></i>Pending
+                                                                </button>
+                                                                <button type="submit" name="status" value="processing" class="dropdown-item">
+                                                                    <i class="fas fa-cog me-2"></i>Processing
+                                                                </button>
+                                                                <button type="submit" name="status" value="shipped" class="dropdown-item">
+                                                                    <i class="fas fa-truck me-2"></i>Shipped
+                                                                </button>
+                                                                <button type="submit" name="status" value="delivered" class="dropdown-item">
+                                                                    <i class="fas fa-check-circle me-2"></i>Delivered
+                                                                </button>
+                                                                <div class="dropdown-divider"></div>
+                                                                <button type="submit" name="status" value="cancelled" class="dropdown-item text-danger">
+                                                                    <i class="fas fa-times-circle me-2"></i>Cancel Order
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                @else
+                                                <span class="text-muted">No actions</span>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
-
                                 </tbody>
                             </table>
                         </div>
