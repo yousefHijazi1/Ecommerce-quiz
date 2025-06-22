@@ -1,8 +1,11 @@
 Installation steps :
 
 1- Download zip file or git clone https://github.com/yousefHijazi1/Ecommerce-quiz.git
+
 2- run in terminal 'composer install'
+
 3- run in terminal 'npm install'
+
 4- put your database info in .env file
 
 5- 
